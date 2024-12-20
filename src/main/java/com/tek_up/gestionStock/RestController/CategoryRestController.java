@@ -9,11 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController()
-@RequestMapping("/category")
+@RequestMapping("api/category")
 public class CategoryRestController {
     @Autowired
     CategoryService categoryService;
 
+
+    // ADMIN
+
+    // TEACHER
+    // STUDENT
     @GetMapping("getAllCategories")
     public List<Category> getAllCategories(){
         return categoryService.getAllCategories();
@@ -35,7 +40,7 @@ public class CategoryRestController {
     }
 
     @PutMapping("updateCategory")
-    public Category updateCategory(@RequestBody Category category, Long id){
+    public Category updateCategory(@RequestBody Category category,@RequestParam Long id){
         return categoryService.updateCategory(category, id);
     }
 }

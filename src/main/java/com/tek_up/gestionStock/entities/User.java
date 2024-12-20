@@ -1,5 +1,7 @@
 package com.tek_up.gestionStock.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tek_up.gestionStock.enums.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -43,6 +46,15 @@ public class User implements UserDetails {
     @Column()
     @NotEmpty
     private String password;
+
+    @JsonIgnore
+    private Roles role;
+
+    @Column()
+    private Boolean isEnabled;
+
+    @Column()
+    private Date createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CoursBooking> bookings = new ArrayList<>();
