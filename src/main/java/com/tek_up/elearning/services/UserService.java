@@ -89,26 +89,22 @@ public class UserService implements UserDetailsService {
 
         public ResponseEntity<?> login(User loginRequest) {
             try {
-                // Authenticate the user
+                System.out.println(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
                 );
+                System.out.println("ffffff");
 
-                // Set authentication in the security context
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                // Generate JWT token
                 String jwt = jwtUtils.generateJwtToken(authentication);
 
-                // Extract user details from the authentication object
                 User userDetails = (User) authentication.getPrincipal();
 
-                // Map roles from authorities
                 List<String> roles = userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList();
 
-                // Return the JWT token in the response
                 return ResponseEntity.ok(new JwtResponse(jwt));
             } catch (Exception e) {
                 return ResponseEntity.status(401).body(Map.of("error", "Authentication failed: " + e.getMessage()));
