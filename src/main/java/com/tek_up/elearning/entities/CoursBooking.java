@@ -19,11 +19,11 @@ public class CoursBooking {
     @Column()
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cours_id", nullable = false)
     private Cours cours;
 

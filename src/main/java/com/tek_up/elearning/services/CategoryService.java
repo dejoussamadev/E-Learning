@@ -42,4 +42,13 @@ public class CategoryService {
 
         return categoryRepository.save(categoryToUpdate);
     }
+
+    public List<Category> generateCategories(List<Category> categories) {
+        try{
+            categories.forEach(this::createCategory);
+            return categories;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: " + e.getMessage());
+        }
+    }
 }

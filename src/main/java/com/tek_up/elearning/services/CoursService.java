@@ -2,6 +2,7 @@ package com.tek_up.elearning.services;
 
 import com.tek_up.elearning.dao.BookingRepository;
 import com.tek_up.elearning.dao.CoursRepository;
+import com.tek_up.elearning.dao.UserRepository;
 import com.tek_up.elearning.entities.Cours;
 import com.tek_up.elearning.entities.CoursBooking;
 import com.tek_up.elearning.entities.User;
@@ -19,6 +20,8 @@ public class CoursService {
     UserService userService;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Cours> getAllCourses() {
         return coursRepository.findAll();
@@ -37,27 +40,34 @@ public class CoursService {
     }
 
     public Cours createCours(Long ownerId, Cours cours) {
-        Cours coursToCreate = new Cours();
-        coursToCreate.setName(cours.getName());
-        coursToCreate.setDescription(cours.getDescription());
-        coursToCreate.setCategory(cours.getCategory());
-        coursToCreate.setOwner(userService.getUserById(ownerId));
-        coursToCreate.setCreatedAt(new Date());
-
-        return coursRepository.save(cours);
+        try{
+            Cours coursToCreate = new Cours();
+            coursToCreate.setName(cours.getName());
+            coursToCreate.setDescription(cours.getDescription());
+            coursToCreate.setCategory(cours.getCategory());
+            coursToCreate.setOwner(userService.getUserById(ownerId));
+            coursToCreate.setCreatedAt(new Date());
+            return coursRepository.save(cours);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: " + e.getMessage());
+        }
     }
 
-    public Cours updateCours(Cours cours, Long id) {
-        if(!coursRepository.existsById(id)) {
-            throw new IllegalArgumentException("Cours id not found");
+    public Cours updateCours(Cours cours, Long ownerId, Long coursId) {
+        try {
+            if(!coursRepository.existsById(coursId) && cours.getOwner().getId().equals(ownerId)) {
+                throw new IllegalArgumentException("Cours id not found");
+            }
+            Cours coursToUpdate = coursRepository.getReferenceById(coursId);
+
+            coursToUpdate.setName(cours.getName());
+            coursToUpdate.setDescription(cours.getDescription());
+            coursToUpdate.setCategory(cours.getCategory());
+
+            return coursRepository.save(coursToUpdate);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: " + e.getMessage());
         }
-        Cours coursToUpdate = coursRepository.getReferenceById(id);
-
-        coursToUpdate.setName(cours.getName());
-        coursToUpdate.setDescription(cours.getDescription());
-        coursToUpdate.setCategory(cours.getCategory());
-
-        return coursRepository.save(coursToUpdate);
     }
 
     public void deleteTeacherCours(Long coursId, Long teacherId) {
@@ -88,6 +98,13 @@ public class CoursService {
 
     public CoursBooking enrollCours(Long userId, Long coursId) {
         try{
+            if(!userRepository.existsById(userId)){
+                throw new IllegalArgumentException("User not found");
+            }
+            if(!coursRepository.existsById(coursId)){
+                System.out.println("//////////////// " + coursId);
+                throw new IllegalArgumentException("Cours not found");
+            }
             Cours cours = getCoursById(coursId);
             User user = userService.getUserById(userId);
 
@@ -111,6 +128,20 @@ public class CoursService {
             }
             return enroll;
         } catch (Exception e) {
+            throw new IllegalArgumentException("Error: " + e.getMessage());
+        }
+    }
+
+    public List<Cours> generateCourses(Long ownerId, List<Cours> courses) {
+        try{
+            if (!userRepository.existsById(ownerId)){
+                throw new IllegalArgumentException("User not found");
+            }
+            courses.forEach(cours -> {
+                createCours(ownerId, cours);
+            });
+            return courses;
+        }catch (Exception e){
             throw new IllegalArgumentException("Error: " + e.getMessage());
         }
     }

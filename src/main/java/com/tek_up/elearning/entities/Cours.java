@@ -1,5 +1,7 @@
 package com.tek_up.elearning.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name= "courses")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Cours {
 
     @Id
@@ -31,17 +34,17 @@ public class Cours {
     private String description;
 
     @Column()
-    @NotEmpty
     private Date createdAt;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private User owner;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CoursBooking> bookings = new ArrayList<>();
 }

@@ -2,6 +2,7 @@ package com.tek_up.elearning.RestController;
 
 
 import com.tek_up.elearning.entities.Category;
+import com.tek_up.elearning.entities.Cours;
 import com.tek_up.elearning.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,12 @@ public class CategoryRestController {
         return categoryService.createCategory(category);
     }
     @DeleteMapping("admin/deleteCategory")
-    public void deleteCategory(Long id){
+    public void deleteCategory(@RequestParam(name = "category_id") Long id){
         categoryService.deleteCategory(id);
     }
 
     @PutMapping("admin/updateCategory")
-    public Category updateCategory(@RequestBody Category category,@RequestParam Long id){
+    public Category updateCategory(@RequestBody Category category,@RequestParam(name = "category_id") Long id){
         return categoryService.updateCategory(category, id);
     }
 
@@ -41,8 +42,9 @@ public class CategoryRestController {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("getCategoryById")
-    public Category getCategoryById(Long id){
-        return categoryService.getCategoryById(id);
+    // ------------- GENERATION -------------
+    @PostMapping("generateCategories")
+    public List<Category> generateCategories(@RequestBody List<Category> categories){
+        return categoryService.generateCategories(categories);
     }
 }

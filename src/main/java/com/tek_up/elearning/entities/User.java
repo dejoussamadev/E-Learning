@@ -1,6 +1,7 @@
 package com.tek_up.elearning.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tek_up.elearning.enums.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name= "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User implements UserDetails {
 
     @Id
@@ -56,9 +58,11 @@ public class User implements UserDetails {
     @Column()
     private Date createdAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Cours> courses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CoursBooking> bookings = new ArrayList<>();
 

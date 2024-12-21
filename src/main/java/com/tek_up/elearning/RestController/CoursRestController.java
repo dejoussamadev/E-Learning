@@ -1,5 +1,6 @@
 package com.tek_up.elearning.RestController;
 
+import com.tek_up.elearning.dao.UserRepository;
 import com.tek_up.elearning.entities.Cours;
 import com.tek_up.elearning.entities.CoursBooking;
 import com.tek_up.elearning.services.CoursService;
@@ -16,10 +17,11 @@ public class CoursRestController {
     CoursService coursService;
 
 
+
     // ADMIN
     @DeleteMapping("admin/deleteCours")
-    public void deleteCours(Long id){
-        coursService.deleteCours(id);
+    public void deleteCours(@RequestParam(name = "cours_id") Long coursId){
+        coursService.deleteCours(coursId);
     }
 
     // TEACHER
@@ -29,8 +31,8 @@ public class CoursRestController {
     }
 
     @PutMapping("teacher/updateCours")
-    public Cours updateCategory(@RequestBody Cours cours, Long id){
-        return coursService.updateCours(cours, id);
+    public Cours updateCours(@RequestBody Cours cours,@RequestParam(name = "teacher_id") Long teacherId, @RequestParam(name = "cours_id") Long coursId){
+        return coursService.updateCours(cours, teacherId, coursId);
     }
 
     @PostMapping("teacher/createCours")
@@ -44,12 +46,12 @@ public class CoursRestController {
     }
 
     // STUDENT
-    @GetMapping("student/enrollCours")
-    public CoursBooking enrollCours(@RequestParam(name = "user_id") Long userId, @RequestParam(name = "cours_id") Long coursId){
+    @PostMapping("student/enrollCours")
+    public CoursBooking enrollCours(@RequestParam(name = "student_id") Long userId, @RequestParam(name = "cours_id") Long coursId){
         return coursService.enrollCours(userId, coursId);
     }
 
-    @GetMapping("student/unenrollCours")
+    @DeleteMapping("student/unenrollCours")
     public CoursBooking unenrollCours(@RequestParam(name = "studentId") Long studentId, @RequestParam(name = "enroll_id") Long enrollId){
         return coursService.unenrollCours(studentId, enrollId);
     }
@@ -61,7 +63,13 @@ public class CoursRestController {
     }
 
     @GetMapping("getCoursById")
-    public Cours getCategoryById(Long id){
+    public Cours getCategoryById(@RequestParam(name = "cours_id") Long id){
         return coursService.getCoursById(id);
+    }
+
+    // ------------- GENERATION -------------
+    @PostMapping("generateCourses")
+    public List<Cours> generateCourses(@RequestParam(name = "owner_id") Long ownerId, @RequestBody List<Cours> courses){
+        return coursService.generateCourses(ownerId, courses);
     }
 }
