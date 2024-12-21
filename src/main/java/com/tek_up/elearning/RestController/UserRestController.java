@@ -26,20 +26,18 @@ public class UserRestController {
         userService.deleteUser(id);
     }
 
-
-
     // USER
-    @PostMapping("createUser")
+    @PostMapping("user/createUser")
     public User createUser(@RequestBody User user){
         return userService.createUser(user);
     }
 
-    @GetMapping("getUserById")
+    @GetMapping("user/getUserById")
     public User getUserById(@RequestParam(name = "user_id") Long id){
         return userService.getUserById(id);
     }
 
-    @PutMapping("updateUser")
+    @PutMapping("user/updateUser")
     public User updateUser(@RequestParam(name = "user_id") Long userId, @RequestBody User user){
         return userService.updateUser(user, userId);
     }

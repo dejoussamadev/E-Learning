@@ -57,18 +57,18 @@ public class CoursRestController {
     }
 
     // USER
-    @GetMapping("getAllCourses")
+    @GetMapping("user/getAllCourses")
     public List<Cours> getAllCourses(){
         return coursService.getAllCourses();
     }
 
-    @GetMapping("getCoursById")
+    @GetMapping("user/getCoursById")
     public Cours getCategoryById(@RequestParam(name = "cours_id") Long id){
         return coursService.getCoursById(id);
     }
 
     // ------------- GENERATION -------------
-    @PostMapping("generateCourses")
+    @PostMapping("user/generateCourses")
     public List<Cours> generateCourses(@RequestParam(name = "owner_id") Long ownerId, @RequestBody List<Cours> courses){
         return coursService.generateCourses(ownerId, courses);
     }

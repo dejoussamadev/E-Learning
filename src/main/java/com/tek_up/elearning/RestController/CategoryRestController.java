@@ -37,13 +37,13 @@ public class CategoryRestController {
     // --------------
 
     // User
-    @GetMapping("getAllCategories")
+    @GetMapping("user/getAllCategories")
     public List<Category> getAllCategories(){
         return categoryService.getAllCategories();
     }
 
     // ------------- GENERATION -------------
-    @PostMapping("generateCategories")
+    @PostMapping("user/generateCategories")
     public List<Category> generateCategories(@RequestBody List<Category> categories){
         return categoryService.generateCategories(categories);
     }
